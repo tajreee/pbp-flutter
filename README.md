@@ -100,3 +100,40 @@ samples, guidance on mobile development, and a full API reference.
     - Membangun drawer tersebut dengan StatefulWidget sesuai dengan tata letak dan dekorasi yang diinginkan menggunakan layout-layout widget yang sesuai.
     - Menghubungkan drawer dengan halaman yang sesuai agar dapat melakukan navigasi dengan cepat.
     - Melakukan git add, commit, dan push ke dalam repository.
+
+## Pertanyaan dan Jawaban Tugas 9
+1. Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?
+    - Bisa, namun pasti proses pengambilan datanya akan sulit dan tidak bisa digunakan kembali pada file dart yang berbeda sehingga lebih susah daripada membuat model terlebih dahulu.
+
+2. Jelaskan fungsi dari CookieRequest dan jelaskan mengapa instance CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.
+    - CookieRequest adalah kelas yang digunakan untuk mengirim permintaan HTTP yang menyertakan cookie. Ketika aplikasi Flutter memerlukan pengiriman permintaan HTTP yang menyertakan cookie, maka instance CookieRequest perlu dibagikan ke semua komponen di aplikasi Flutter yang memerlukan pengiriman permintaan HTTP tersebut. Hal ini dilakukan agar semua komponen dapat menggunakan instance yang sama dan memastikan bahwa cookie yang dikirimkan dalam permintaan HTTP konsisten. Dengan demikian, instance CookieRequest dapat digunakan untuk mengirim permintaan HTTP yang menyertakan cookie dengan mudah dan efisien di seluruh aplikasi Flutter.
+
+3. Jelaskan mekanisme pengambilan data dari JSON hingga dapat ditampilkan pada Flutter.
+    - Ambil data pada endpoint JSON yang digunakan di Django Web.
+    - Salin dan pindahkan ke QuickType agar model dari JSON tersebut langsung dibuat oleh web tersebut.
+    - Lalu salin model yang telah dibuat ke dalam suatu file dart baru.
+    - Kemudian, buat kode untuk mengambil data JSON tersebut secara asynchronous.
+    - Buat file dart baru untuk menampilkan data yang telah diambil dengan widget-wigdet yang sesuai.
+
+4. Jelaskan mekanisme autentikasi dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.
+    - User melakukan input pada username dan password untuk login.
+    - Flutter mengirimkan HTTP request ke Django Web yang telah terintegrasi dengan fitur login.
+    - Django Web menerima HTTP request dan dikelola untuk mengecek apakah username dan passwordnya ada atau tidak.
+    - Django Web mengirimkan HTTP response ke Flutter sehingga user dapat login jika username dan passwordnya valid.
+
+5. Sebutkan seluruh widget yang kamu pakai pada tugas ini dan jelaskan fungsinya masing-masing.
+    - Elevated Button, membuat tombol dan melakukan submit input pada TextFormField.
+    - Navigator, menavigasi ke halaman berikutnya.
+    - ListView, untuk menampilkan item seperti Column.
+    - InkWell, agar list item dapat ditekan dan menuju ke detail item
+    - ListTile, untuk menampilkan list pada drawer.
+
+6.  Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial).
+    - Tambahkan depedencies http, provider, dan pbp_django_auth.
+    - Memperbaiki main.dart dengan menggunakan provider dan CookieRequest.
+    - Membuat file login_page sebagai halaman login yang menerima input username dan password user.
+    - Membuat model objek dari data JSON pada Django Web dan membangun kode untuk model tersebut.
+    - Membuat file baru untuk menampilkan data dari JSON dengan serangkaian proses asynchronous dalam pengambilan datanya.
+    - Menampilkan data yang telah diambil ke suatu halaman yang selesai.
+    - Membuat file baru untuk menampilkan secara detail terkait data yang telah diambil.
+    - Melakukan konfigurasi logout agar user dapat keluar dari aplikasi.

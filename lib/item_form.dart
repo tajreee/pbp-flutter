@@ -1,6 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:pbp_flutter/menu.dart';
 import 'package:pbp_flutter/object_app.dart';
+import 'package:provider/provider.dart';
 
 class AddItemForm extends StatefulWidget {
   const AddItemForm({super.key});
@@ -20,6 +26,7 @@ class AddItemFormState extends State<AddItemForm> {
 
   @override
   Widget build(BuildContext context) {
+  final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -123,40 +130,34 @@ class AddItemFormState extends State<AddItemForm> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 223, 47, 47),
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        ItemSingleton().itemList.add(Item(name: _name, price: _price, description: _description));
-                        showDialog(
-                          context: context, 
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Center(
-                                child: Text('Success!'),
-                              ),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Nama Item : $_name'),
-                                    Text('Harga     : $_price'),
-                                    Text('Deskripsi :\n$_description')
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text("OK"),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-                                  },
-                                )
-                              ],
-                            );
-                          }
-                        );
-                      _formKey.currentState!.reset();
-                      }
+                    onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                            // Kirim ke Django dan tunggu respons
+                            final response = await request.postJson(
+                            "http://127.0.0.1:8000/create-flutter/",
+                            jsonEncode(<String, String>{
+                                'name': _name,
+                                'price': _price.toString(),
+                                'description': _description,
+                                // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                            }));
+                            if (response['status'] == 'success') {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                content: Text("Produk baru berhasil disimpan!"),
+                                ));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                                );
+                            } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                    content:
+                                        Text("Terdapat kesalahan, silakan coba lagi."),
+                                ));
+                            }
+                        }
                     },
                     child: const Text(
                       "Save",

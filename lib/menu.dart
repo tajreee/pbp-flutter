@@ -1,14 +1,20 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+// import 'package:pbp_flutter/container_test.dart';
 import 'package:pbp_flutter/item_form.dart';
+import 'package:pbp_flutter/login_page.dart';
 import 'package:pbp_flutter/show_item.dart';
 import 'package:pbp_flutter/drawer_app.dart';
+import 'package:provider/provider.dart';
  
  class MyHomePage extends StatelessWidget {
   MyHomePage({Key? key}) : super(key: key);
   final List<ShopItem> items = [
-    ShopItem("Lihat Item", Icons.checklist, const Color.fromARGB(255, 98, 7, 1)),
-    ShopItem("Tambah Item", Icons.add_shopping_cart, const Color.fromARGB(255, 183, 23, 11)),
-    ShopItem("Logout", Icons.logout, const Color.fromARGB(255, 238, 145, 138)),
+    ShopItem("Lihat Item", Icons.checklist, const Color.fromARGB(255, 98, 7, 1), 1),
+    ShopItem("Tambah Item", Icons.add_shopping_cart, const Color.fromARGB(255, 183, 23, 11), 2),
+    ShopItem("Logout", Icons.logout, const Color.fromARGB(255, 238, 145, 138), 3),
   ];
 
     @override
@@ -66,8 +72,9 @@ import 'package:pbp_flutter/drawer_app.dart';
     final String name;
     final IconData icon;
     final Color color;
+    final int id;
 
-    ShopItem(this.name, this.icon, this.color);
+    ShopItem(this.name, this.icon, this.color, this.id);
   }
 
   class ShopCard extends StatelessWidget {
@@ -77,11 +84,12 @@ import 'package:pbp_flutter/drawer_app.dart';
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Material(
       color: item.color,
       child: InkWell(
         // Area responsive terhadap sentuhan
-        onTap: () {
+        onTap: () async {
           // Memunculkan SnackBar ketika diklik
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -89,12 +97,32 @@ import 'package:pbp_flutter/drawer_app.dart';
                 content: Text("Kamu telah menekan tombol ${item.name}!")));
           
           if (item.name == "Lihat Item") {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const ShowItemPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ItemPage()));
           }
 
           if (item.name == "Tambah Item") {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const AddItemForm()));
           }
+
+          if (item.name == "Logout") {
+            final response = await request.logout(
+                "http://127.0.0.1:8000/auth/logout/");
+            String message = response["message"];
+            if (response['status']) {
+              String uname = response["username"];
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("$message Sampai jumpa, $uname."),
+              ));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("$message"),
+              ));
+            }
+          }    
         },
         child: Container(
           // Container untuk menyimpan Icon dan Text

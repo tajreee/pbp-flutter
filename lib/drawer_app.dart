@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_flutter/item.dart';
 import 'package:pbp_flutter/menu.dart';
 import 'package:pbp_flutter/item_form.dart';
 import 'package:pbp_flutter/show_item.dart';
@@ -60,7 +61,7 @@ class DrawerApp extends StatelessWidget {
               Navigator.push(
                 context, 
                 MaterialPageRoute(
-                  builder: (context) => const ShowItemPage(),
+                  builder: (context) => const ItemPage(),
                 )
               );
             },
@@ -78,7 +79,7 @@ class DrawerApp extends StatelessWidget {
                 )
               );
             },
-          )
+          ),
         ],
       ),
     );
